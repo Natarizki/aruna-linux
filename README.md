@@ -1,15 +1,17 @@
 # Aruna Linux
 
-Aruna Linux is an independent, immutable desktop image based on Fedora Sericea (Sway Atomic), built with [BlueBuild](https://blue-build.org/).
+Aruna Linux is an independent, immutable desktop image based on Fedora Sway Atomic, built with [BlueBuild](https://blue-build.org/).
 
 ## Project direction
 
 - **Desktop:** Sway on Wayland
-- **Base image:** Universal Blue Sericea (`ghcr.io/ublue-os/sericea-main`)
+- **Base image:** Fedora Sway Atomic 45 (`quay.io/fedora-ostree-desktops/sway-atomic:45`)
 - **Image builder:** BlueBuild
 - **Architecture:** x86_64 (initial target)
 - **Image registry:** GitHub Container Registry (GHCR)
 - **Build automation:** GitHub Actions
+
+Fedora renamed Sericea to Sway Atomic and moved the container image to the `fedora-ostree-desktops/sway-atomic` repository on Quay.
 
 ## Aruna desktop identity
 
@@ -37,7 +39,7 @@ Do not commit or share `cosign.key`. Only `cosign.pub` belongs in this repositor
 
 ## Current status
 
-Early development. The base image, initial Sway/Waybar theme, wallpaper, and lock-screen configuration are in the repository. The image has not yet been built or published. Application selection, update policy, installer workflow, and release process remain future work.
+Early development. The Fedora Sway Atomic base, initial Sway/Waybar theme, wallpaper, and lock-screen configuration are in the repository. The image has not yet been built or published. Application selection, update policy, installer workflow, and release process remain future work.
 
 ## License
 
