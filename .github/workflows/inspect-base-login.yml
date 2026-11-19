@@ -20,12 +20,12 @@ jobs:
       - name: Pull Fedora Sway Atomic base image
         run: docker pull quay.io/fedora-ostree-desktops/sway-atomic:45
 
-      - name: Report display-manager packages and systemd defaults
+      - name: Inspect display manager and available SDDM themes
         shell: bash
         run: |
           docker run --rm --entrypoint /bin/bash quay.io/fedora-ostree-desktops/sway-atomic:45 -lc '
             echo "=== Login-related packages ==="
-            rpm -qa | sort | grep -Ei "^(gdm|sddm|greetd|tuigreet|regreet|gtkgreet|ly)(-|$)" || true
+            rpm -qa | sort | grep -Ei "^(gdm|sddm|greetd|tuigreet|regreet|gtkgreet|ly|breeze|qt6-qtquickcontrols)(-|$)" || true
 
             echo
             echo "=== Display manager alias ==="
@@ -38,8 +38,26 @@ jobs:
             fi
 
             echo
-            echo "=== Login-related unit files and enablement links ==="
+            echo "=== Login-related unit files ==="
             find /etc/systemd/system /usr/lib/systemd/system \
               -maxdepth 4 \( -name "gdm.service" -o -name "sddm.service" -o -name "greetd.service" -o -name "display-manager.service" \) \
               -exec ls -ld {} \; 2>/dev/null | sort
+
+            echo
+            echo "=== Installed SDDM themes ==="
+            if [ -d /usr/share/sddm/themes ]; then
+              find /usr/share/sddm/themes -mindepth 1 -maxdepth 2 -type f \
+                \( -name "metadata.desktop" -o -name "Main.qml" \) -print | sort
+            else
+              echo "No /usr/share/sddm/themes directory"
+            fi
+
+            echo
+            echo "=== SDDM configuration ==="
+            for f in /etc/sddm.conf /etc/sddm.conf.d/*.conf /usr/lib/sddm/sddm.conf.d/*.conf; do
+              if [ -f "$f" ]; then
+                echo "--- $f"
+                sed -n "1,160p" "$f"
+              fi
+            done
           '
