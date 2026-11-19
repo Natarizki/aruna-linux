@@ -18,8 +18,11 @@ The initial desktop configuration uses a blue and slate palette:
 - Sway window borders and focused-window colors are customized.
 - Waybar uses a dark slate surface with blue highlights.
 - The top bar displays workspaces, mode, clock, network, CPU, memory, audio, and system tray.
+- The Aruna abstract wallpaper is installed under `/usr/share/backgrounds/aruna/`.
+- `swaybg` starts the wallpaper in the Sway session.
+- `swaylock` provides the matching lock-screen palette; the default shortcut is `Super+Shift+X`.
 
-System-wide configuration is maintained under `files/system/` and installed by the BlueBuild `files` module.
+System-wide configuration is maintained under `files/system/` and installed by the BlueBuild `files` module. Desktop packages are declared in `recipes/desktop-packages.yml`.
 
 ## Build and signing
 
@@ -34,7 +37,7 @@ Do not commit or share `cosign.key`. Only `cosign.pub` belongs in this repositor
 
 ## Current status
 
-Early development. The base image and first Sway/Waybar theme files are in place. The image has not yet been built or published. Application selection, update policy, installer workflow, and release process remain future work.
+Early development. The base image, initial Sway/Waybar theme, wallpaper, and lock-screen configuration are in the repository. The image has not yet been built or published. Application selection, update policy, installer workflow, and release process remain future work.
 
 ## License
 
