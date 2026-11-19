@@ -1,6 +1,12 @@
 name: Inspect Fedora Sway Atomic login stack
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/inspect-base-login.yml'
+      - 'recipes/recipe.yml'
   workflow_dispatch:
 
 permissions:
