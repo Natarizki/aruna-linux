@@ -20,44 +20,27 @@ jobs:
       - name: Pull Fedora Sway Atomic base image
         run: docker pull quay.io/fedora-ostree-desktops/sway-atomic:45
 
-      - name: Inspect display manager and available SDDM themes
+      - name: Inspect display manager, SDDM theme source, and Qt runtime
         shell: bash
         run: |
           docker run --rm --entrypoint /bin/bash quay.io/fedora-ostree-desktops/sway-atomic:45 -lc '
-            echo "=== Login-related packages ==="
-            rpm -qa | sort | grep -Ei "^(gdm|sddm|greetd|tuigreet|regreet|gtkgreet|ly|breeze|qt6-qtquickcontrols)(-|$)" || true
+            echo "=== Login and Qt/QML packages ==="
+            rpm -qa | sort | grep -Ei "^(sddm|qt6-qt(declarative|quick|wayland|base|svg|shadertools)|qt6-qml|kf6-.*)(-|$)" || true
 
             echo
-            echo "=== Display manager alias ==="
-            if [ -L /etc/systemd/system/display-manager.service ]; then
-              readlink -f /etc/systemd/system/display-manager.service
-            elif [ -e /etc/systemd/system/display-manager.service ]; then
-              ls -l /etc/systemd/system/display-manager.service
-            else
-              echo "No /etc display-manager.service symlink"
-            fi
+            echo "=== Display manager ==="
+            readlink -f /etc/systemd/system/display-manager.service || true
+            systemctl --root=/ --no-pager is-enabled sddm.service 2>/dev/null || true
 
             echo
-            echo "=== Login-related unit files ==="
-            find /etc/systemd/system /usr/lib/systemd/system \
-              -maxdepth 4 \( -name "gdm.service" -o -name "sddm.service" -o -name "greetd.service" -o -name "display-manager.service" \) \
-              -exec ls -ld {} \; 2>/dev/null | sort
+            echo "=== SDDM theme metadata ==="
+            cat /usr/share/sddm/themes/03-sway-fedora/metadata.desktop
 
             echo
-            echo "=== Installed SDDM themes ==="
-            if [ -d /usr/share/sddm/themes ]; then
-              find /usr/share/sddm/themes -mindepth 1 -maxdepth 2 -type f \
-                \( -name "metadata.desktop" -o -name "Main.qml" \) -print | sort
-            else
-              echo "No /usr/share/sddm/themes directory"
-            fi
+            echo "=== SDDM theme Main.qml (first 260 lines) ==="
+            sed -n "1,260p" /usr/share/sddm/themes/03-sway-fedora/Main.qml
 
             echo
-            echo "=== SDDM configuration ==="
-            for f in /etc/sddm.conf /etc/sddm.conf.d/*.conf /usr/lib/sddm/sddm.conf.d/*.conf; do
-              if [ -f "$f" ]; then
-                echo "--- $f"
-                sed -n "1,160p" "$f"
-              fi
-            done
+            echo "=== SDDM theme assets ==="
+            find /usr/share/sddm/themes/03-sway-fedora -maxdepth 2 -type f | sort
           '
