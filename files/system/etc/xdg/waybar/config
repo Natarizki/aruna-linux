@@ -40,17 +40,16 @@
   },
 
   "clock": {
-    "format": "  {:%a %d %b  %H:%M}",
+    "format": "{:%a %d %b  %H:%M}",
     "tooltip": true,
     "tooltip-format": "<big>{:%A, %d %B %Y}</big>\n<tt>{calendar}</tt>"
   },
 
   "network": {
-    "format-wifi": "  {essid}",
-    "format-ethernet": "󰈀  {ifname}",
-    "format-disconnected": "󰖪  Offline",
-    "tooltip-format": "{ifname}: {ipaddr}/{cidr}",
-    "on-click": "nm-connection-editor"
+    "format-wifi": "Wi-Fi {essid}",
+    "format-ethernet": "ETH {ifname}",
+    "format-disconnected": "Offline",
+    "tooltip-format": "{ifname}: {ipaddr}/{cidr}"
   },
 
   "cpu": {
@@ -66,12 +65,9 @@
   },
 
   "pulseaudio": {
-    "format": "{icon}  {volume}%",
-    "format-muted": "󰝟  Muted",
-    "format-icons": {
-      "default": ["", "", ""]
-    },
-    "on-click": "pavucontrol"
+    "format": "VOL {volume}%",
+    "format-muted": "VOL muted",
+    "tooltip": true
   },
 
   "tray": {
