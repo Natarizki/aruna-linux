@@ -1,32 +1,22 @@
 # Aruna login and session design
 
-## Current direction
+## Current implementation
 
-Aruna uses Sway on Fedora Sway Atomic 45. Fedora renamed Sericea to Sway Atomic; the container image is now hosted at `quay.io/fedora-ostree-desktops/sway-atomic`.
+Aruna uses SDDM 0.21.0 on Fedora Sway Atomic 45. The base image includes the Qt 6.11.2 runtime, Qt Quick/QML, and the SDDM Wayland Sway session integration.
 
-The login experience should remain minimal and professional, matching the blue/slate desktop identity.
+Aruna keeps SDDM and installs its own theme at:
 
-## Safety-first integration
+- `/usr/share/sddm/themes/aruna`
+- `/etc/sddm.conf.d/10-aruna-theme.conf`
 
-The base image's current display manager must be identified before changing login services. Replacing or enabling a second display manager without checking the base can cause competing services or a machine that reaches no graphical login.
+The configuration selects `Current=aruna`. The theme uses the SDDM-provided `SddmComponents 2.0` controls for username, password, session selection, login, restart, and shutdown. It does not replace or enable another display manager.
 
-The manual GitHub Actions workflow **Inspect Fedora Sway Atomic login stack** pulls the Fedora 45 base image and reports:
+## Validation
 
-- installed login-manager and greeter packages;
-- the target of `display-manager.service`, if present;
-- login-related systemd unit files.
+The **Inspect Fedora Sway Atomic login stack** workflow runs when the theme, its SDDM configuration, or its inspection workflow changes. It checks that the expected theme files exist, verifies the base SDDM/Qt runtime packages, and checks the integration points used by the QML theme.
 
-Run that workflow before selecting or enabling a greeter. It does not modify or publish any image.
-
-## Planned login experience
-
-After the base audit, choose one supported route:
-
-1. Keep the base display manager and customize its supported branding, if it can provide the desired experience.
-2. Replace it deliberately with a Sway-compatible greetd greeter, with the previous display manager disabled in the same image change.
-
-Do not enable two display managers at once. Keep a recovery path available during first-boot testing.
+This CI check is a static integration check; a successful run does not replace testing the greeter on actual display hardware.
 
 ## Session
 
-The Sway session already loads Aruna's wallpaper and provides the themed screen-lock shortcut. Login-manager integration is intentionally pending the base-image audit.
+The SDDM session selector uses the sessions provided by the base image. Aruna's Sway session continues to load the blue desktop theme and wallpaper after login.
