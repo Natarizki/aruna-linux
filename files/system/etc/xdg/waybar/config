@@ -1,0 +1,81 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 34,
+  "spacing": 8,
+  "margin-top": 6,
+  "margin-left": 8,
+  "margin-right": 8,
+
+  "modules-left": [
+    "sway/workspaces",
+    "sway/mode"
+  ],
+  "modules-center": [
+    "clock"
+  ],
+  "modules-right": [
+    "network",
+    "cpu",
+    "memory",
+    "pulseaudio",
+    "tray"
+  ],
+
+  "sway/workspaces": {
+    "disable-scroll": true,
+    "all-outputs": true,
+    "format": "{name}",
+    "persistent-workspaces": {
+      "1": [],
+      "2": [],
+      "3": [],
+      "4": []
+    }
+  },
+
+  "sway/mode": {
+    "format": "MODE: {}",
+    "tooltip": false
+  },
+
+  "clock": {
+    "format": "  {:%a %d %b  %H:%M}",
+    "tooltip": true,
+    "tooltip-format": "<big>{:%A, %d %B %Y}</big>\n<tt>{calendar}</tt>"
+  },
+
+  "network": {
+    "format-wifi": "  {essid}",
+    "format-ethernet": "󰈀  {ifname}",
+    "format-disconnected": "󰖪  Offline",
+    "tooltip-format": "{ifname}: {ipaddr}/{cidr}",
+    "on-click": "nm-connection-editor"
+  },
+
+  "cpu": {
+    "interval": 5,
+    "format": "CPU {usage}%",
+    "tooltip": true
+  },
+
+  "memory": {
+    "interval": 5,
+    "format": "RAM {percentage}%",
+    "tooltip": true
+  },
+
+  "pulseaudio": {
+    "format": "{icon}  {volume}%",
+    "format-muted": "󰝟  Muted",
+    "format-icons": {
+      "default": ["", "", ""]
+    },
+    "on-click": "pavucontrol"
+  },
+
+  "tray": {
+    "icon-size": 16,
+    "spacing": 8
+  }
+}
