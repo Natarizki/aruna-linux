@@ -2,13 +2,15 @@
 
 ## Current direction
 
-Aruna uses Sway on Fedora Sericea. The login experience should remain minimal and professional, matching the blue/slate desktop identity.
+Aruna uses Sway on Fedora Sway Atomic 45. Fedora renamed Sericea to Sway Atomic; the container image is now hosted at `quay.io/fedora-ostree-desktops/sway-atomic`.
+
+The login experience should remain minimal and professional, matching the blue/slate desktop identity.
 
 ## Safety-first integration
 
 The base image's current display manager must be identified before changing login services. Replacing or enabling a second display manager without checking the base can cause competing services or a machine that reaches no graphical login.
 
-The manual GitHub Actions workflow **Inspect Sericea login stack** pulls the current Sericea base image and reports:
+The manual GitHub Actions workflow **Inspect Fedora Sway Atomic login stack** pulls the Fedora 45 base image and reports:
 
 - installed login-manager and greeter packages;
 - the target of `display-manager.service`, if present;
