@@ -28,18 +28,26 @@ System-wide configuration is maintained under `files/system/` and installed by t
 
 ## Build and signing
 
-The GitHub Actions workflow is currently manual-only. The image recipe includes BlueBuild's signing module, so a matching cosign key pair must be configured before the first successful publish:
+The image build workflow is manually triggered from **Actions → Aruna Linux image → Run workflow**.
+
+The image recipe includes BlueBuild's signing module:
 
 1. Generate a cosign key pair.
 2. Add the private key contents as the repository Actions secret named `SIGNING_SECRET`.
 3. Commit the matching public key as `cosign.pub` in the repository root.
-4. Open **Actions → Aruna Linux image → Run workflow**.
+4. Never commit or share `cosign.key`.
 
-Do not commit or share `cosign.key`. Only `cosign.pub` belongs in this repository.
+The first successful image build was published to GHCR and its signature was verified against the repository public key.
+
+## Installer ISO
+
+The **Aruna Linux installer ISO** workflow can be manually triggered from **Actions → Aruna Linux installer ISO → Run workflow**. It generates an x86_64 installer ISO from the published GHCR image and uploads it as a workflow artifact.
+
+The ISO workflow is an initial x86_64 installer path. Booting with 32-bit IA32 UEFI firmware (for example, some Bay Trail devices) is not yet integrated or validated. Adding a `BOOTIA32.EFI` file alone is not sufficient unless the EFI boot image and GRUB configuration are also compatible.
 
 ## Current status
 
-Early development. The Fedora Sway Atomic base, initial Sway/Waybar theme, wallpaper, and lock-screen configuration are in the repository. The image has not yet been built or published. Application selection, update policy, installer workflow, and release process remain future work.
+Early development. The first customized image has been built, published, and signature-verified. The installer ISO workflow has been added but still needs a successful CI run and hardware testing. Actual installation, first boot, and IA32 UEFI compatibility have not yet been verified.
 
 ## License
 
