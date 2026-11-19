@@ -1,0 +1,42 @@
+name: Aruna Linux installer ISO
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  build-iso:
+    name: Generate Aruna installer ISO
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Install BlueBuild CLI
+        run: |
+          bash <(curl -fsSL https://raw.githubusercontent.com/blue-build/cli/main/install.sh)
+          bluebuild --version
+
+      - name: Generate installer ISO
+        run: |
+          sudo bluebuild generate-iso \
+            --variant sericea \
+            --iso-name aruna-linux-x86_64.iso \
+            --output output \
+            image ghcr.io/natarizki/aruna-linux:latest
+
+      - name: Verify ISO output
+        run: |
+          test -s output/aruna-linux-x86_64.iso
+          file output/aruna-linux-x86_64.iso
+          sha256sum output/aruna-linux-x86_64.iso
+
+      - name: Upload installer ISO
+        uses: actions/upload-artifact@v4
+        with:
+          name: aruna-linux-x86_64-installer-iso
+          path: output/aruna-linux-x86_64.iso
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
