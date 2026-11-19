@@ -8,7 +8,11 @@ description: Aruna Linux is an independent immutable desktop image based on Fedo
 base-image: ghcr.io/ublue-os/sericea-main
 image-version: latest
 
-# Start with a minimal, upstream-compatible image.
-# Add Aruna-specific packages and configuration in later changes.
+# Apply Aruna's system-wide Sway configuration.
 modules:
+  - type: files
+    files:
+      - source: system
+        destination: /
+
   - type: signing
