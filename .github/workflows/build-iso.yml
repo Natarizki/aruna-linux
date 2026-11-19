@@ -21,9 +21,9 @@ jobs:
       - name: Generate installer ISO
         run: |
           sudo bluebuild generate-iso \
-            --variant sericea \
+            --variant kinoite \
             --iso-name aruna-linux-x86_64.iso \
-            --output output \
+            --output-dir output \
             image ghcr.io/natarizki/aruna-linux:latest
 
       - name: Verify ISO output
