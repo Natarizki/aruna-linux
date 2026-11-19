@@ -7,6 +7,8 @@ on:
     paths:
       - '.github/workflows/inspect-base-login.yml'
       - 'recipes/recipe.yml'
+      - 'files/system/usr/share/sddm/themes/aruna/**'
+      - 'files/system/etc/sddm.conf.d/10-aruna-theme.conf'
   workflow_dispatch:
 
 permissions:
@@ -17,30 +19,44 @@ jobs:
     name: Inspect Fedora Sway Atomic 45
     runs-on: ubuntu-latest
     steps:
+      - name: Check out Aruna repository
+        uses: actions/checkout@v4
+
       - name: Pull Fedora Sway Atomic base image
         run: docker pull quay.io/fedora-ostree-desktops/sway-atomic:45
 
-      - name: Inspect display manager, SDDM theme source, and Qt runtime
+      - name: Inspect base SDDM runtime and validate Aruna theme integration
         shell: bash
         run: |
-          docker run --rm --entrypoint /bin/bash quay.io/fedora-ostree-desktops/sway-atomic:45 -lc '
-            echo "=== Login and Qt/QML packages ==="
-            rpm -qa | sort | grep -Ei "^(sddm|qt6-qt(declarative|quick|wayland|base|svg|shadertools)|qt6-qml|kf6-.*)(-|$)" || true
+          set -euo pipefail
 
-            echo
-            echo "=== Display manager ==="
-            readlink -f /etc/systemd/system/display-manager.service || true
-            systemctl --root=/ --no-pager is-enabled sddm.service 2>/dev/null || true
+          test -s files/system/usr/share/sddm/themes/aruna/Main.qml
+          test -s files/system/usr/share/sddm/themes/aruna/metadata.desktop
+          test -s files/system/etc/sddm.conf.d/10-aruna-theme.conf
+          grep -q '^Name=Aruna$' files/system/usr/share/sddm/themes/aruna/metadata.desktop
+          grep -q '^Current=aruna$' files/system/etc/sddm.conf.d/10-aruna-theme.conf
+          grep -q 'import SddmComponents 2.0' files/system/usr/share/sddm/themes/aruna/Main.qml
+          grep -q 'sddm.login(name.text, password.text, sessionIndex)' files/system/usr/share/sddm/themes/aruna/Main.qml
 
-            echo
-            echo "=== SDDM theme metadata ==="
-            cat /usr/share/sddm/themes/03-sway-fedora/metadata.desktop
-
-            echo
-            echo "=== SDDM theme Main.qml (first 260 lines) ==="
-            sed -n "1,260p" /usr/share/sddm/themes/03-sway-fedora/Main.qml
-
-            echo
-            echo "=== SDDM theme assets ==="
-            find /usr/share/sddm/themes/03-sway-fedora -maxdepth 2 -type f | sort
-          '
+          docker run --rm \
+            -v "${GITHUB_WORKSPACE}:/workspace:ro" \
+            --entrypoint /bin/bash \
+            quay.io/fedora-ostree-desktops/sway-atomic:45 -lc '
+              set -e
+              echo "=== Required SDDM and Qt runtime ==="
+              rpm -q sddm qt6-qtbase qt6-qtdeclarative qt6-qtsvg
+              echo
+              echo "=== Base display manager ==="
+              readlink -f /etc/systemd/system/display-manager.service
+              echo
+              echo "=== Aruna theme metadata ==="
+              cat /workspace/files/system/usr/share/sddm/themes/aruna/metadata.desktop
+              echo
+              echo "=== Aruna SDDM configuration ==="
+              cat /workspace/files/system/etc/sddm.conf.d/10-aruna-theme.conf
+              echo
+              echo "=== Aruna QML integration checks ==="
+              grep -nE "^(import |[[:space:]]*(TextBox|PasswordBox|ComboBox|Button) \{|[[:space:]]*onClicked:)" /workspace/files/system/usr/share/sddm/themes/aruna/Main.qml
+              echo
+              echo "Theme files and base runtime checks passed."
+            '
