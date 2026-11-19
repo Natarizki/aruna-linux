@@ -1,4 +1,4 @@
-name: Inspect Sericea login stack
+name: Inspect Fedora Sway Atomic login stack
 
 on:
   workflow_dispatch:
@@ -8,16 +8,16 @@ permissions:
 
 jobs:
   inspect:
-    name: Inspect base image login components
+    name: Inspect Fedora Sway Atomic 45
     runs-on: ubuntu-latest
     steps:
-      - name: Pull Sericea base image
-        run: docker pull ghcr.io/ublue-os/sericea-main:latest
+      - name: Pull Fedora Sway Atomic base image
+        run: docker pull quay.io/fedora-ostree-desktops/sway-atomic:45
 
       - name: Report display-manager packages and systemd defaults
         shell: bash
         run: |
-          docker run --rm --entrypoint /bin/bash ghcr.io/ublue-os/sericea-main:latest -lc '
+          docker run --rm --entrypoint /bin/bash quay.io/fedora-ostree-desktops/sway-atomic:45 -lc '
             echo "=== Login-related packages ==="
             rpm -qa | sort | grep -Ei "^(gdm|sddm|greetd|tuigreet|regreet|gtkgreet|ly)(-|$)" || true
 
@@ -32,8 +32,8 @@ jobs:
             fi
 
             echo
-            echo "=== Enabled login-related units ==="
+            echo "=== Login-related unit files and enablement links ==="
             find /etc/systemd/system /usr/lib/systemd/system \
-              -maxdepth 3 \( -name "gdm.service" -o -name "sddm.service" -o -name "greetd.service" -o -name "display-manager.service" \) \
-              -print 2>/dev/null | sort
+              -maxdepth 4 \( -name "gdm.service" -o -name "sddm.service" -o -name "greetd.service" -o -name "display-manager.service" \) \
+              -exec ls -ld {} \; 2>/dev/null | sort
           '
