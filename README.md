@@ -43,11 +43,11 @@ The first successful image build was published to GHCR and its signature was ver
 
 The **Aruna Linux installer ISO** workflow can be manually triggered from **Actions → Aruna Linux installer ISO → Run workflow**. It generates an x86_64 installer ISO from the published GHCR image and uploads it as a workflow artifact.
 
-The ISO workflow is an initial x86_64 installer path. Booting with 32-bit IA32 UEFI firmware (for example, some Bay Trail devices) is not yet integrated or validated. Adding a `BOOTIA32.EFI` file alone is not sufficient unless the EFI boot image and GRUB configuration are also compatible.
+The ISO workflow currently generates the x86_64 installer and runs an automated EFI boot inventory. The audit records El Torito entries and inspects embedded EFI boot images for IA32 and x86_64 loader binaries. This is a diagnostic stage only: IA32 bootloader integration, kernel EFI mixed-mode support, and booting on 32-bit UEFI hardware are not yet established. Adding a `BOOTIA32.EFI` file alone is not sufficient.
 
 ## Current status
 
-Early development. The first customized image has been built, published, and signature-verified. The installer ISO workflow has been added but still needs a successful CI run and hardware testing. Actual installation, first boot, and IA32 UEFI compatibility have not yet been verified.
+Early development. The first customized image has been built, published, and signature-verified. The installer ISO workflow has previously completed successfully. The new EFI inventory step still needs a CI run. Actual installation, first boot, and IA32 UEFI compatibility have not yet been verified.
 
 ## License
 
