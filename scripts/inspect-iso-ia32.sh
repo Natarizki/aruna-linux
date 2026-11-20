@@ -16,6 +16,12 @@ echo "== Extract embedded boot images =="
 mkdir -p "$OUT/boot-images"
 xorriso -osirrox on -indev "$ISO" -extract_boot_images "$OUT/boot-images" 2>&1 | tee "$OUT/extract-boot-images.txt"
 
+echo "== Inspect EFI files inside embedded FAT boot images =="
+while IFS= read -r -d '' img; do
+  echo "-- $img --"
+  mdir -i "$img" -s :: 2>&1 || true
+done < <(find "$OUT/boot-images" -type f -print0) | tee "$OUT/fat-image-inventory.txt"
+
 echo "== Inspect ISO EFI directory =="
 mkdir -p "$OUT/iso-efi"
 xorriso -osirrox on -indev "$ISO" -extract /EFI "$OUT/iso-efi/EFI" 2>&1 | tee "$OUT/extract-efi.txt" || true
@@ -23,6 +29,7 @@ xorriso -osirrox on -indev "$ISO" -extract /EFI "$OUT/iso-efi/EFI" 2>&1 | tee "$
 {
   echo "EFI files found in extracted boot images and ISO tree:"
   find "$OUT/boot-images" "$OUT/iso-efi" -type f -print 2>/dev/null | sort || true
+  cat "$OUT/fat-image-inventory.txt" 2>/dev/null || true
   echo
   echo "EFI executable formats:"
   find "$OUT/boot-images" "$OUT/iso-efi" -type f -print0 2>/dev/null |
