@@ -48,6 +48,7 @@ jobs:
           bash scripts/qemu-iso-smoke.sh output/aruna-linux-x86_64.iso qemu-smoke
 
       - name: Upload installer ISO
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: aruna-linux-x86_64-installer-iso
@@ -57,6 +58,7 @@ jobs:
           compression-level: 0
 
       - name: Upload IA32 audit report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: aruna-iso-ia32-audit
