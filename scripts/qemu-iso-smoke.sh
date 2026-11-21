@@ -78,7 +78,7 @@ try:
     s.recv(4096)
 except OSError:
     pass
-s.sendall(f"screendump {screenshot}\\n".encode())
+s.sendall(f"screendump {screenshot}\n".encode())
 time.sleep(2)
 try:
     response = s.recv(4096).decode(errors="replace")
