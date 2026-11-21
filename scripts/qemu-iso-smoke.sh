@@ -6,13 +6,13 @@ OUT="${2:-qemu-smoke}"
 DURATION="${QEMU_TEST_SECONDS:-90}"
 mkdir -p "$OUT"
 
-CODE="$(find /usr/share/OVMF /usr/share/ovmf -type f \\( -iname 'OVMF_CODE*.fd' -o -iname 'OVMF_CODE*.bin' \\) 2>/dev/null | sort | head -n1 || true)"
+CODE="$(find /usr/share/OVMF /usr/share/ovmf -type f -iname 'OVMF_CODE*.fd' 2>/dev/null | sort | head -n1 || find /usr/share/OVMF /usr/share/ovmf -type f -iname 'OVMF_CODE*.bin' 2>/dev/null | sort | head -n1 || true)"
 if [[ -z "$CODE" ]]; then
   echo "ERROR: No x86_64 OVMF firmware image found." | tee "$OUT/summary.txt"
   exit 1
 fi
 
-VARS="$(find /usr/share/OVMF /usr/share/ovmf -type f \\( -iname 'OVMF_VARS*.fd' -o -iname 'OVMF_VARS*.bin' \\) 2>/dev/null | sort | head -n1 || true)"
+VARS="$(find /usr/share/OVMF /usr/share/ovmf -type f -iname 'OVMF_VARS*.fd' 2>/dev/null | sort | head -n1 || find /usr/share/OVMF /usr/share/ovmf -type f -iname 'OVMF_VARS*.bin' 2>/dev/null | sort | head -n1 || true)"
 if [[ -z "$VARS" ]]; then
   echo "ERROR: No OVMF variable-store template found." | tee "$OUT/summary.txt"
   exit 1
