@@ -36,13 +36,13 @@ xorriso -osirrox on -indev "$ISO" -extract /EFI "$OUT/iso-efi/EFI" 2>&1 | tee "$
     while IFS= read -r -d '' f; do file "$f"; done || true
 } | tee "$OUT/efi-inventory.txt"
 
-if grep -Eiq 'BOOTIA32\\.EFI|gcdia32\\.efi|grubia32\\.efi' "$OUT/efi-inventory.txt"; then
+if grep -Eiq 'BOOTIA32\.EFI|gcdia32\.efi|grubia32\.efi' "$OUT/efi-inventory.txt"; then
   echo "IA32 EFI binary detected. This is presence-only, not a boot test." | tee "$OUT/ia32-result.txt"
 else
   echo "No recognizable IA32 EFI bootloader found in the ISO boot images or EFI tree." | tee "$OUT/ia32-result.txt"
 fi
 
-if grep -Eiq 'BOOTX64\\.EFI|shimx64\\.efi|gcdx64\\.efi|grubx64\\.efi' "$OUT/efi-inventory.txt"; then
+if grep -Eiq 'BOOTX64\.EFI|shimx64\.efi|gcdx64\.efi|grubx64\.efi' "$OUT/efi-inventory.txt"; then
   echo "x86_64 EFI bootloader detected." | tee -a "$OUT/ia32-result.txt"
 else
   echo "WARNING: no recognizable x86_64 EFI bootloader name detected." | tee -a "$OUT/ia32-result.txt"
